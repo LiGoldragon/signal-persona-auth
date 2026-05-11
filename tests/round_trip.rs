@@ -5,7 +5,7 @@ use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
 use signal_core::{Frame, FrameBody, Request};
 use signal_persona_auth::{
     ChannelId, ComponentName, ConnectionClass, EngineId, HostName, IngressContext, MessageOrigin,
-    NetworkPeer, RouteId, SystemPrincipal, UnixUserId,
+    NetworkPeer, OwnerIdentity, RouteId, SystemPrincipal, UnixUserId,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize)]
@@ -15,6 +15,7 @@ enum Probe {
     RouteId(RouteId),
     ChannelId(ChannelId),
     ComponentName(ComponentName),
+    OwnerIdentity(OwnerIdentity),
     ConnectionClass(ConnectionClass),
     MessageOrigin(MessageOrigin),
     IngressContext(IngressContext),
@@ -53,9 +54,8 @@ fn string_backed_identifiers_round_trip() {
 #[test]
 fn component_name_covers_first_stack_components() {
     let components = [
-        ComponentName::PersonaDaemon,
         ComponentName::Mind,
-        ComponentName::Message,
+        ComponentName::MessageProxy,
         ComponentName::Router,
         ComponentName::Terminal,
         ComponentName::Harness,
@@ -66,6 +66,21 @@ fn component_name_covers_first_stack_components() {
         assert_eq!(
             round_trip(Probe::ComponentName(component)),
             Probe::ComponentName(component)
+        );
+    }
+}
+
+#[test]
+fn owner_identity_variants_round_trip() {
+    let identities = [
+        OwnerIdentity::UnixUser(UnixUserId::new(1000)),
+        OwnerIdentity::System(SystemPrincipal::new("persona")),
+    ];
+
+    for identity in identities {
+        assert_eq!(
+            round_trip(Probe::OwnerIdentity(identity.clone())),
+            Probe::OwnerIdentity(identity)
         );
     }
 }
@@ -109,7 +124,7 @@ fn message_origin_variants_round_trip() {
 #[test]
 fn ingress_context_carries_origin_without_proof_material() {
     let contexts = [
-        IngressContext::internal(ComponentName::Message),
+        IngressContext::internal(ComponentName::MessageProxy),
         IngressContext::external(ConnectionClass::NonOwnerUser(UnixUserId::new(2000))),
     ];
 

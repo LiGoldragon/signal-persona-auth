@@ -9,11 +9,12 @@ It is deliberately not an authentication library.
 ## Constraints
 
 - The crate defines typed provenance records for Persona ingress.
-- The crate does not define a Persona-specific `AuthProof`.
+- The crate does not define a Persona-specific in-band proof type.
 - The crate has no daemon, socket, actor, terminal, or database logic.
 - `ConnectionClass` is a closed enum for known ingress classes.
 - `ComponentName` is a closed enum for known first-stack Persona
   components.
+- `OwnerIdentity` records engine ownership from local system context.
 - `IngressContext` carries origin context, not proof material.
 - Records round-trip through `rkyv`.
 - Public constructors attach behavior to the data they create.
@@ -62,4 +63,3 @@ security tokens.
 - No routing policy.
 - No storage.
 - No compatibility wrapper for legacy lock files.
-

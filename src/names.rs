@@ -105,6 +105,16 @@ impl SystemPrincipal {
     }
 }
 
+/// Engine owner identity recorded from local system context.
+#[derive(Debug, Clone, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize)]
+#[rkyv(compare(PartialEq), derive(Debug))]
+pub enum OwnerIdentity {
+    /// A Unix user owns the engine.
+    UnixUser(UnixUserId),
+    /// A system principal owns the engine.
+    System(SystemPrincipal),
+}
+
 /// Unix user identifier captured from the local operating system.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize)]
 #[rkyv(compare(PartialEq), derive(Debug))]
@@ -149,12 +159,10 @@ impl NetworkPeer {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize)]
 #[rkyv(compare(PartialEq), derive(Debug))]
 pub enum ComponentName {
-    /// Persona infrastructure supervisor.
-    PersonaDaemon,
     /// Persona central work graph and orchestration component.
     Mind,
-    /// Persona message ingress and delivery proxy.
-    Message,
+    /// Persona message proxy component.
+    MessageProxy,
     /// Persona router component.
     Router,
     /// Persona terminal component.

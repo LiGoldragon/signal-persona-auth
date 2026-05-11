@@ -10,7 +10,6 @@ This repository is a Signal contract repository. Before editing, read:
 - `/home/li/primary/skills/naming.md`
 
 This crate owns Persona origin-context vocabulary. It must not define a
-Persona-specific `AuthProof` type. Filesystem permissions and process
+Persona-specific in-band proof type. Filesystem permissions and process
 spawn context are the local trust boundary; this crate only names the
 typed provenance records passed after ingress.
-
