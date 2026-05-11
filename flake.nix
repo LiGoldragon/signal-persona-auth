@@ -48,6 +48,13 @@
         checks = {
           default = package;
 
+          rkyv-feature-discipline = pkgs.runCommand "signal-persona-auth-rkyv-feature-discipline" { } ''
+            ${pkgs.gnugrep}/bin/grep -F \
+              'rkyv = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }' \
+              ${./Cargo.toml} > /dev/null
+            touch $out
+          '';
+
           test = craneLib.cargoTest (
             commonArgs
             // {
@@ -77,4 +84,3 @@
       }
     );
 }
-

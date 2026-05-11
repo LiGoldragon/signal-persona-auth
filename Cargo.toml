@@ -7,7 +7,7 @@ description = "Persona origin-context Signal contract records."
 license = "MIT"
 
 [dependencies]
-rkyv = { version = "0.8", features = ["std"] }
+rkyv = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
 signal-core = { git = "https://github.com/LiGoldragon/signal-core.git" }
 
 [dev-dependencies]
@@ -16,4 +16,3 @@ pretty_assertions = "1"
 [lints.rust]
 unsafe_code = "forbid"
 missing_docs = "warn"
-
