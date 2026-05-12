@@ -16,9 +16,11 @@ It is deliberately not an authentication library.
   components.
 - `OwnerIdentity` records engine ownership from local system context.
 - `IngressContext` carries origin context, not proof material.
-- Records round-trip through `rkyv`.
+- Records round-trip through `rkyv` and NOTA text where they cross readable
+  surfaces.
 - Public constructors attach behavior to the data they create.
-- String-backed identifiers are private-field newtypes.
+- String-backed identifiers are private-field newtypes with explicit text
+  projections.
 
 ## Boundary
 
@@ -54,6 +56,16 @@ flowchart TD
 `EngineId`, `RouteId`, and `ChannelId` identify the engine, route, and
 channel vocabulary used by the daemon/router boundary. They are not
 security tokens.
+
+## Round Trips
+
+Tests in `tests/round_trip.rs` cover rkyv frame round trips for identifiers,
+component names, owner identity, connection class, message origin, and ingress
+context. NOTA text witnesses cover `EngineId` and `IngressContext`.
+
+`IngressContext` is origin context. The source scan test rejects a
+Persona-specific `AuthProof` type so proof/gate vocabulary does not re-enter
+this contract.
 
 ## Non-Goals
 
