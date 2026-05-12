@@ -1,5 +1,6 @@
 #![allow(missing_docs)]
 
+use nota_codec::{Decoder, Encoder, NotaDecode, NotaEncode};
 use pretty_assertions::assert_eq;
 use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
 use signal_core::{Frame, FrameBody, Request};
@@ -35,6 +36,20 @@ fn round_trip(probe: Probe) -> Probe {
     }
 }
 
+fn round_trip_nota<T>(value: T, expected: &str)
+where
+    T: NotaEncode + NotaDecode + PartialEq + std::fmt::Debug,
+{
+    let mut encoder = Encoder::new();
+    value.encode(&mut encoder).expect("encode nota text");
+    let encoded = encoder.into_string();
+    assert_eq!(encoded, expected);
+
+    let mut decoder = Decoder::new(&encoded);
+    let recovered = T::decode(&mut decoder).expect("decode nota text");
+    assert_eq!(recovered, value);
+}
+
 #[test]
 fn string_backed_identifiers_round_trip() {
     assert_eq!(
@@ -49,6 +64,11 @@ fn string_backed_identifiers_round_trip() {
         round_trip(Probe::ChannelId(ChannelId::new("message-submit"))),
         Probe::ChannelId(ChannelId::new("message-submit"))
     );
+}
+
+#[test]
+fn engine_identifier_round_trips_through_nota_text() {
+    round_trip_nota(EngineId::new("engine-main"), "engine-main");
 }
 
 #[test]
@@ -134,6 +154,14 @@ fn ingress_context_carries_origin_without_proof_material() {
             Probe::IngressContext(context)
         );
     }
+}
+
+#[test]
+fn ingress_context_round_trips_through_nota_text_without_proof_material() {
+    round_trip_nota(
+        IngressContext::external(ConnectionClass::NonOwnerUser(UnixUserId::new(2000))),
+        "(IngressContext (External (NonOwnerUser 2000)))",
+    );
 }
 
 #[test]
