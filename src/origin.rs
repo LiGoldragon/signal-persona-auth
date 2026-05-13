@@ -103,7 +103,7 @@ impl NotaDecode for ConnectionClass {
 #[derive(Debug, Clone, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize)]
 #[rkyv(compare(PartialEq), derive(Debug))]
 pub enum MessageOrigin {
-    /// A frame emitted by a known first-stack Persona component.
+    /// A frame emitted by a supervised local Persona component.
     Internal(ComponentName),
     /// A frame emitted by something outside the component mesh.
     External(ConnectionClass),
