@@ -57,6 +57,29 @@ flowchart TD
 channel vocabulary used by the daemon/router boundary. They are not
 security tokens.
 
+## SO_PEERCRED → ConnectionClass mapping
+
+Per `~/primary/reports/designer/144-prototype-architecture-final-cleanup-after-da36.md` §3.6,
+the mapping from kernel-supplied peer credentials to
+`ConnectionClass` is fixed:
+
+```text
+On message.sock (the only user-writable socket in the engine):
+  SO_PEERCRED.uid == engine_owner_uid       →  ConnectionClass::Owner
+  SO_PEERCRED.uid != engine_owner_uid       →  ConnectionClass::NonOwnerUser(Uid)
+
+On internal sockets (mode 0600 — only persona-user
+processes can connect; the kernel rejects other uids
+before the accept loop runs):
+  SO_PEERCRED.uid == persona_system_uid     →  Internal(component_name from the spawn envelope)
+```
+
+The `engine_owner_uid` comes from the manager catalog
+(`OwnerIdentity::User(Uid)`). The `persona_system_uid` is the
+deployment's `persona` system user. The mapping is contract-stable;
+implementations cannot reinterpret SO_PEERCRED values into other
+`ConnectionClass` variants without a coordinated wire bump.
+
 ## Round Trips
 
 Tests in `tests/round_trip.rs` cover rkyv frame round trips for identifiers,
