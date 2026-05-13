@@ -75,7 +75,7 @@ fn engine_identifier_round_trips_through_nota_text() {
 fn component_name_covers_first_stack_components() {
     let components = [
         ComponentName::Mind,
-        ComponentName::MessageProxy,
+        ComponentName::Message,
         ComponentName::Router,
         ComponentName::Terminal,
         ComponentName::Harness,
@@ -144,7 +144,7 @@ fn message_origin_variants_round_trip() {
 #[test]
 fn ingress_context_carries_origin_without_proof_material() {
     let contexts = [
-        IngressContext::internal(ComponentName::MessageProxy),
+        IngressContext::internal(ComponentName::Message),
         IngressContext::external(ConnectionClass::NonOwnerUser(UnixUserId::new(2000))),
     ];
 
