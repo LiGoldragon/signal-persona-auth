@@ -12,8 +12,8 @@ It is deliberately not an authentication library.
 - The crate does not define a Persona-specific in-band proof type.
 - The crate has no daemon, socket, actor, terminal, or database logic.
 - `ConnectionClass` is a closed enum for known ingress classes.
-- `ComponentName` is a closed enum for known first-stack Persona
-  components.
+- `ComponentName` is a closed enum for supervised local Persona
+  component principals.
 - `OwnerIdentity` records engine ownership from local system context.
 - `IngressContext` carries origin context, not proof material.
 - Records round-trip through `rkyv` and NOTA text where they cross readable
@@ -84,7 +84,8 @@ implementations cannot reinterpret SO_PEERCRED values into other
 
 Tests in `tests/round_trip.rs` cover rkyv frame round trips for identifiers,
 component names, owner identity, connection class, message origin, and ingress
-context. NOTA text witnesses cover `EngineId` and `IngressContext`.
+context. NOTA text witnesses cover `EngineId`, `IngressContext`, and the
+prototype `Introspect` component principal.
 
 `IngressContext` is origin context. The source scan test rejects a
 Persona-specific `AuthProof` type so proof/gate vocabulary does not re-enter

@@ -173,7 +173,7 @@ impl NetworkPeer {
     }
 }
 
-/// First-stack Persona component names.
+/// Supervised local Persona component names.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize, NotaEnum)]
 #[rkyv(compare(PartialEq), derive(Debug))]
 pub enum ComponentName {
@@ -189,4 +189,6 @@ pub enum ComponentName {
     Harness,
     /// Persona system integration component.
     System,
+    /// Persona introspection component.
+    Introspect,
 }

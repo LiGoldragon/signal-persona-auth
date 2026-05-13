@@ -5,6 +5,6 @@
   tables, or actors here.
 - Do not introduce a Persona-specific in-band proof type. The local trust
   boundary is outside this crate.
-- Prefer closed enums for known Persona components and provenance
-  classes. Use string newtypes only for names whose universe is outside
-  this crate.
+- Prefer closed enums for supervised local Persona component principals
+  and provenance classes. Use string newtypes only for names whose
+  universe is outside this crate.

@@ -72,7 +72,7 @@ fn engine_identifier_round_trips_through_nota_text() {
 }
 
 #[test]
-fn component_name_covers_first_stack_components() {
+fn component_name_covers_supervised_local_components() {
     let components = [
         ComponentName::Mind,
         ComponentName::Message,
@@ -80,6 +80,7 @@ fn component_name_covers_first_stack_components() {
         ComponentName::Terminal,
         ComponentName::Harness,
         ComponentName::System,
+        ComponentName::Introspect,
     ];
 
     for component in components {
@@ -88,6 +89,11 @@ fn component_name_covers_first_stack_components() {
             Probe::ComponentName(component)
         );
     }
+}
+
+#[test]
+fn introspect_component_name_round_trips_through_nota_text() {
+    round_trip_nota(ComponentName::Introspect, "Introspect");
 }
 
 #[test]
