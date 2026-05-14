@@ -3,7 +3,7 @@
 use nota_codec::{Decoder, Encoder, NotaDecode, NotaEncode};
 use pretty_assertions::assert_eq;
 use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
-use signal_core::{Frame, FrameBody, Request};
+use signal_core::{Frame, FrameBody, Request, RequestPayload, SignalVerb};
 use signal_persona_auth::{
     ChannelId, ComponentName, ConnectionClass, EngineId, HostName, IngressContext, MessageOrigin,
     NetworkPeer, OwnerIdentity, RouteId, SystemPrincipal, UnixUserId,
@@ -22,8 +22,15 @@ enum Probe {
     IngressContext(IngressContext),
 }
 
+impl RequestPayload for Probe {
+    fn signal_verb(&self) -> SignalVerb {
+        SignalVerb::Assert
+    }
+}
+
 fn round_trip(probe: Probe) -> Probe {
-    let frame = Frame::<Probe, Probe>::new(FrameBody::Request(Request::assert(probe)));
+    let expected_verb = probe.signal_verb();
+    let frame = Frame::<Probe, Probe>::new(FrameBody::Request(Request::from_payload(probe)));
     let bytes = frame
         .encode_length_prefixed()
         .expect("frame should serialize");
@@ -31,7 +38,10 @@ fn round_trip(probe: Probe) -> Probe {
         Frame::<Probe, Probe>::decode_length_prefixed(&bytes).expect("frame should deserialize");
 
     match decoded.into_body() {
-        FrameBody::Request(Request::Operation { payload, .. }) => payload,
+        FrameBody::Request(Request::Operation { verb, payload }) => {
+            assert_eq!(verb, expected_verb);
+            payload
+        }
         _ => panic!("expected request operation frame"),
     }
 }
