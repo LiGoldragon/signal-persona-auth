@@ -59,8 +59,7 @@ security tokens.
 
 ## SO_PEERCRED → ConnectionClass mapping
 
-Per `~/primary/reports/designer/144-prototype-architecture-final-cleanup-after-da36.md` §3.6,
-the mapping from kernel-supplied peer credentials to
+The mapping from kernel-supplied peer credentials to
 `ConnectionClass` is fixed:
 
 ```text
