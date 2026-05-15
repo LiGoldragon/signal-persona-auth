@@ -3,7 +3,10 @@
 use nota_codec::{Decoder, Encoder, NotaDecode, NotaEncode};
 use pretty_assertions::assert_eq;
 use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
-use signal_core::{Frame, FrameBody, Request, RequestPayload, SignalVerb};
+use signal_core::{
+    ExchangeFrame, ExchangeFrameBody, ExchangeIdentifier, ExchangeLane, LaneSequence, Request,
+    RequestPayload, SessionEpoch, SignalVerb,
+};
 use signal_persona_auth::{
     ChannelId, ComponentName, ConnectionClass, EngineId, HostName, IngressContext, MessageOrigin,
     NetworkPeer, OwnerIdentity, RouteId, SystemPrincipal, UnixUserId,
@@ -28,19 +31,31 @@ impl RequestPayload for Probe {
     }
 }
 
+fn exchange() -> ExchangeIdentifier {
+    ExchangeIdentifier::new(
+        SessionEpoch::new(1),
+        ExchangeLane::Connector,
+        LaneSequence::first(),
+    )
+}
+
 fn round_trip(probe: Probe) -> Probe {
     let expected_verb = probe.signal_verb();
-    let frame = Frame::<Probe, Probe>::new(FrameBody::Request(Request::from_payload(probe)));
+    let frame = ExchangeFrame::<Probe, Probe>::new(ExchangeFrameBody::Request {
+        exchange: exchange(),
+        request: Request::from_payload(probe),
+    });
     let bytes = frame
         .encode_length_prefixed()
         .expect("frame should serialize");
-    let decoded =
-        Frame::<Probe, Probe>::decode_length_prefixed(&bytes).expect("frame should deserialize");
+    let decoded = ExchangeFrame::<Probe, Probe>::decode_length_prefixed(&bytes)
+        .expect("frame should deserialize");
 
     match decoded.into_body() {
-        FrameBody::Request(Request::Operation { verb, payload }) => {
-            assert_eq!(verb, expected_verb);
-            payload
+        ExchangeFrameBody::Request { request, .. } => {
+            let operation = request.operations().head();
+            assert_eq!(operation.verb, expected_verb);
+            operation.payload.clone()
         }
         _ => panic!("expected request operation frame"),
     }
