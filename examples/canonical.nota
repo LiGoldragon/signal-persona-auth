@@ -1,0 +1,67 @@
+;; Canonical NOTA examples for signal-persona-auth.
+;;
+;; Provenance vocabulary records: identifiers, owner identity,
+;; connection classes, message origins, and ingress context.
+;;
+;; This crate has no `signal_channel!` declaration; the records here
+;; are imported by other contract crates which embed them in their
+;; own request/reply payloads. The canonical examples test exercises
+;; every public record kind through its NOTA codec.
+;;
+;; Round-trip witness: tests/canonical_examples.rs parses each record
+;; through `<T as NotaDecode>::decode`, re-encodes it, and asserts
+;; the canonical text equals what is written here.
+
+;; ─── Identifiers (NotaTransparent newtypes; emit inner value) ────
+
+;; EngineId(String) — bare-eligible identifier
+prototype
+
+;; RouteId(String) — bare-eligible
+internal-message-router
+
+;; ChannelId(String) — bare-eligible
+internal-message-router
+
+;; HostName(String) — bare-eligible
+goldragon
+
+;; SystemPrincipal(String) — bare-eligible
+persona-system
+
+;; UnixUserId(u32)
+1000
+
+;; NetworkPeer(String) — bare-eligible
+peer-7
+
+;; ─── ComponentName (closed enum) ──────────────────────────────────
+
+Mind
+Message
+Router
+Terminal
+Harness
+Introspect
+
+;; ─── OwnerIdentity (hand-rolled codec) ────────────────────────────
+
+(UnixUser 1000)
+
+;; ─── ConnectionClass (hand-rolled codec) ──────────────────────────
+
+(Owner)
+(NonOwnerUser 1001)
+(System persona-system)
+(OtherPersona other-engine other-host)
+(Network peer-7)
+
+;; ─── MessageOrigin (hand-rolled codec) ────────────────────────────
+
+(Internal Router)
+(External (Owner))
+
+;; ─── IngressContext (NotaRecord) ──────────────────────────────────
+
+(IngressContext (Internal Router))
+(IngressContext (External (Owner)))
