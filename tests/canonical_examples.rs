@@ -33,8 +33,14 @@ where
 #[test]
 fn canonical_identifiers_round_trip() {
     round_trip(EngineId::new("prototype"), "prototype");
-    round_trip(RouteId::new("internal-message-router"), "internal-message-router");
-    round_trip(ChannelId::new("internal-message-router"), "internal-message-router");
+    round_trip(
+        RouteId::new("internal-message-router"),
+        "internal-message-router",
+    );
+    round_trip(
+        ChannelId::new("internal-message-router"),
+        "internal-message-router",
+    );
     round_trip(HostName::new("goldragon"), "goldragon");
     round_trip(SystemPrincipal::new("persona-system"), "persona-system");
     round_trip(UnixUserId::new(1000), "1000");
