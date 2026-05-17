@@ -8,8 +8,9 @@ use signal_core::{
     RequestPayload, SessionEpoch, SignalVerb,
 };
 use signal_persona_auth::{
-    ChannelId, ComponentName, ConnectionClass, EngineId, HostName, IngressContext, MessageOrigin,
-    NetworkPeer, OwnerIdentity, RouteId, SystemPrincipal, UnixUserId,
+    ChannelId, ComponentInstanceName, ComponentName, ConnectionClass, EngineId, HostName,
+    IngressContext, InternalComponentInstanceOrigin, MessageOrigin, NetworkPeer, OwnerIdentity,
+    RouteId, SystemPrincipal, UnixUserId,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize)]
@@ -18,6 +19,7 @@ enum Probe {
     EngineId(EngineId),
     RouteId(RouteId),
     ChannelId(ChannelId),
+    ComponentInstanceName(ComponentInstanceName),
     ComponentName(ComponentName),
     OwnerIdentity(OwnerIdentity),
     ConnectionClass(ConnectionClass),
@@ -88,6 +90,12 @@ fn string_backed_identifiers_round_trip() {
     assert_eq!(
         round_trip(Probe::ChannelId(ChannelId::new("message-submit"))),
         Probe::ChannelId(ChannelId::new("message-submit"))
+    );
+    assert_eq!(
+        round_trip(Probe::ComponentInstanceName(ComponentInstanceName::new(
+            "initiator"
+        ))),
+        Probe::ComponentInstanceName(ComponentInstanceName::new("initiator"))
     );
 }
 
@@ -161,6 +169,10 @@ fn connection_class_variants_round_trip() {
 fn message_origin_variants_round_trip() {
     let origins = [
         MessageOrigin::Internal(ComponentName::Router),
+        MessageOrigin::InternalComponentInstance(InternalComponentInstanceOrigin::new(
+            ComponentName::Harness,
+            ComponentInstanceName::new("initiator"),
+        )),
         MessageOrigin::External(ConnectionClass::Owner),
     ];
 
@@ -176,6 +188,10 @@ fn message_origin_variants_round_trip() {
 fn ingress_context_carries_origin_without_proof_material() {
     let contexts = [
         IngressContext::internal(ComponentName::Message),
+        IngressContext::internal_component_instance(InternalComponentInstanceOrigin::new(
+            ComponentName::Harness,
+            ComponentInstanceName::new("responder"),
+        )),
         IngressContext::external(ConnectionClass::NonOwnerUser(UnixUserId::new(2000))),
     ];
 
@@ -192,6 +208,24 @@ fn ingress_context_round_trips_through_nota_text_without_proof_material() {
     round_trip_nota(
         IngressContext::external(ConnectionClass::NonOwnerUser(UnixUserId::new(2000))),
         "(IngressContext (External (NonOwnerUser 2000)))",
+    );
+}
+
+#[test]
+fn component_instance_origin_round_trips_through_nota_text() {
+    round_trip_nota(
+        MessageOrigin::InternalComponentInstance(InternalComponentInstanceOrigin::new(
+            ComponentName::Harness,
+            ComponentInstanceName::new("initiator"),
+        )),
+        "(InternalComponentInstance (InternalComponentInstanceOrigin Harness initiator))",
+    );
+    round_trip_nota(
+        IngressContext::internal_component_instance(InternalComponentInstanceOrigin::new(
+            ComponentName::Harness,
+            ComponentInstanceName::new("reviewer"),
+        )),
+        "(IngressContext (InternalComponentInstance (InternalComponentInstanceOrigin Harness reviewer)))",
     );
 }
 

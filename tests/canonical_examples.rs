@@ -5,8 +5,9 @@
 
 use nota_codec::{Decoder, Encoder, NotaDecode, NotaEncode};
 use signal_persona_auth::{
-    ChannelId, ComponentName, ConnectionClass, EngineId, HostName, IngressContext, MessageOrigin,
-    NetworkPeer, OwnerIdentity, RouteId, SystemPrincipal, UnixUserId,
+    ChannelId, ComponentInstanceName, ComponentName, ConnectionClass, EngineId, HostName,
+    IngressContext, InternalComponentInstanceOrigin, MessageOrigin, NetworkPeer, OwnerIdentity,
+    RouteId, SystemPrincipal, UnixUserId,
 };
 
 const CANONICAL: &str = include_str!("../examples/canonical.nota");
@@ -41,6 +42,7 @@ fn canonical_identifiers_round_trip() {
         ChannelId::new("internal-message-router"),
         "internal-message-router",
     );
+    round_trip(ComponentInstanceName::new("initiator"), "initiator");
     round_trip(HostName::new("goldragon"), "goldragon");
     round_trip(SystemPrincipal::new("persona-system"), "persona-system");
     round_trip(UnixUserId::new(1000), "1000");
@@ -96,6 +98,13 @@ fn canonical_message_origin_round_trips() {
         "(Internal Router)",
     );
     round_trip(
+        MessageOrigin::InternalComponentInstance(InternalComponentInstanceOrigin::new(
+            ComponentName::Harness,
+            ComponentInstanceName::new("initiator"),
+        )),
+        "(InternalComponentInstance (InternalComponentInstanceOrigin Harness initiator))",
+    );
+    round_trip(
         MessageOrigin::External(ConnectionClass::Owner),
         "(External (Owner))",
     );
@@ -106,6 +115,13 @@ fn canonical_ingress_context_round_trips() {
     round_trip(
         IngressContext::internal(ComponentName::Router),
         "(IngressContext (Internal Router))",
+    );
+    round_trip(
+        IngressContext::internal_component_instance(InternalComponentInstanceOrigin::new(
+            ComponentName::Harness,
+            ComponentInstanceName::new("reviewer"),
+        )),
+        "(IngressContext (InternalComponentInstance (InternalComponentInstanceOrigin Harness reviewer)))",
     );
     round_trip(
         IngressContext::external(ConnectionClass::Owner),

@@ -1,7 +1,10 @@
 use nota_codec::{Decoder, Encoder, NotaDecode, NotaEncode, NotaRecord};
 use rkyv::{Archive, Deserialize as RkyvDeserialize, Serialize as RkyvSerialize};
 
-use crate::{ComponentName, EngineId, HostName, NetworkPeer, SystemPrincipal, UnixUserId};
+use crate::{
+    ComponentInstanceName, ComponentName, EngineId, HostName, NetworkPeer, SystemPrincipal,
+    UnixUserId,
+};
 
 /// Classifies the local or remote connection after ingress has crossed
 /// the operating-system trust boundary.
@@ -23,6 +26,34 @@ pub enum ConnectionClass {
     },
     /// A network peer before stronger remote trust is designed.
     Network(NetworkPeer),
+}
+
+/// Names a supervised component instance inside the local Persona engine.
+#[derive(Debug, Clone, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize, NotaRecord)]
+#[rkyv(compare(PartialEq), derive(Debug))]
+pub struct InternalComponentInstanceOrigin {
+    component: ComponentName,
+    instance: ComponentInstanceName,
+}
+
+impl InternalComponentInstanceOrigin {
+    /// Creates a local component-instance origin.
+    pub fn new(component: ComponentName, instance: ComponentInstanceName) -> Self {
+        Self {
+            component,
+            instance,
+        }
+    }
+
+    /// Returns the component kind.
+    pub fn component(&self) -> ComponentName {
+        self.component
+    }
+
+    /// Returns the component instance name.
+    pub fn instance(&self) -> &ComponentInstanceName {
+        &self.instance
+    }
 }
 
 impl NotaEncode for ConnectionClass {
@@ -105,6 +136,8 @@ impl NotaDecode for ConnectionClass {
 pub enum MessageOrigin {
     /// A frame emitted by a supervised local Persona component.
     Internal(ComponentName),
+    /// A frame emitted through a manager-created local component-instance ingress.
+    InternalComponentInstance(InternalComponentInstanceOrigin),
     /// A frame emitted by something outside the component mesh.
     External(ConnectionClass),
 }
@@ -115,6 +148,11 @@ impl NotaEncode for MessageOrigin {
             Self::Internal(component) => {
                 encoder.start_record("Internal")?;
                 component.encode(encoder)?;
+                encoder.end_record()
+            }
+            Self::InternalComponentInstance(origin) => {
+                encoder.start_record("InternalComponentInstance")?;
+                origin.encode(encoder)?;
                 encoder.end_record()
             }
             Self::External(connection_class) => {
@@ -135,6 +173,12 @@ impl NotaDecode for MessageOrigin {
                 let component = ComponentName::decode(decoder)?;
                 decoder.expect_record_end()?;
                 Ok(Self::Internal(component))
+            }
+            "InternalComponentInstance" => {
+                decoder.expect_record_head("InternalComponentInstance")?;
+                let origin = InternalComponentInstanceOrigin::decode(decoder)?;
+                decoder.expect_record_end()?;
+                Ok(Self::InternalComponentInstance(origin))
             }
             "External" => {
                 decoder.expect_record_head("External")?;
@@ -166,6 +210,11 @@ impl IngressContext {
     /// Creates an ingress context for an internal component.
     pub fn internal(component: ComponentName) -> Self {
         Self::new(MessageOrigin::Internal(component))
+    }
+
+    /// Creates an ingress context for an internal component instance.
+    pub fn internal_component_instance(origin: InternalComponentInstanceOrigin) -> Self {
+        Self::new(MessageOrigin::InternalComponentInstance(origin))
     }
 
     /// Creates an ingress context for an external connection class.

@@ -52,6 +52,23 @@ impl ChannelId {
     }
 }
 
+/// Stable local instance name for a supervised Persona component.
+#[derive(Debug, Clone, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize, NotaTransparent)]
+#[rkyv(compare(PartialEq), derive(Debug))]
+pub struct ComponentInstanceName(String);
+
+impl ComponentInstanceName {
+    /// Creates a component instance name from an external label.
+    pub fn new(value: impl Into<String>) -> Self {
+        Self(value.into())
+    }
+
+    /// Returns the component instance name text.
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
 /// Host label for remote or local routing provenance.
 #[derive(Debug, Clone, PartialEq, Eq, Archive, RkyvSerialize, RkyvDeserialize, NotaTransparent)]
 #[rkyv(compare(PartialEq), derive(Debug))]

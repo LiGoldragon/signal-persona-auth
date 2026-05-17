@@ -8,7 +8,7 @@ mod names;
 mod origin;
 
 pub use names::{
-    ChannelId, ComponentName, EngineId, HostName, NetworkPeer, OwnerIdentity, RouteId,
-    SystemPrincipal, UnixUserId,
+    ChannelId, ComponentInstanceName, ComponentName, EngineId, HostName, NetworkPeer,
+    OwnerIdentity, RouteId, SystemPrincipal, UnixUserId,
 };
-pub use origin::{ConnectionClass, IngressContext, MessageOrigin};
+pub use origin::{ConnectionClass, IngressContext, InternalComponentInstanceOrigin, MessageOrigin};

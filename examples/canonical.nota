@@ -23,6 +23,9 @@ internal-message-router
 ;; ChannelId(String) — bare-eligible
 internal-message-router
 
+;; ComponentInstanceName(String) — bare-eligible
+initiator
+
 ;; HostName(String) — bare-eligible
 goldragon
 
@@ -59,9 +62,11 @@ Introspect
 ;; ─── MessageOrigin (hand-rolled codec) ────────────────────────────
 
 (Internal Router)
+(InternalComponentInstance (InternalComponentInstanceOrigin Harness initiator))
 (External (Owner))
 
 ;; ─── IngressContext (NotaRecord) ──────────────────────────────────
 
 (IngressContext (Internal Router))
+(IngressContext (InternalComponentInstance (InternalComponentInstanceOrigin Harness reviewer)))
 (IngressContext (External (Owner)))
