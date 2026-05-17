@@ -31,7 +31,8 @@ attaches typed origin context to internal Signal frames.
   channel identifiers used by the daemon/router boundary. Not
   security tokens.
 - `ComponentName` — closed enum of supervised local Persona
-  component principals.
+  component principals, including the reserved `Orchestrate`
+  principal for orchestration machinery.
 - `ConnectionClass` — closed enum of known ingress classes.
 - `OwnerIdentity` — engine ownership recorded from local system
   context.

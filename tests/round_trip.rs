@@ -108,6 +108,7 @@ fn engine_identifier_round_trips_through_nota_text() {
 fn component_name_covers_supervised_local_components() {
     let components = [
         ComponentName::Mind,
+        ComponentName::Orchestrate,
         ComponentName::Message,
         ComponentName::Router,
         ComponentName::Terminal,
@@ -127,6 +128,11 @@ fn component_name_covers_supervised_local_components() {
 #[test]
 fn introspect_component_name_round_trips_through_nota_text() {
     round_trip_nota(ComponentName::Introspect, "Introspect");
+}
+
+#[test]
+fn orchestrate_component_name_round_trips_through_nota_text() {
+    round_trip_nota(ComponentName::Orchestrate, "Orchestrate");
 }
 
 #[test]

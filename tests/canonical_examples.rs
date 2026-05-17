@@ -52,6 +52,7 @@ fn canonical_identifiers_round_trip() {
 #[test]
 fn canonical_component_names_round_trip() {
     round_trip(ComponentName::Mind, "Mind");
+    round_trip(ComponentName::Orchestrate, "Orchestrate");
     round_trip(ComponentName::Message, "Message");
     round_trip(ComponentName::Router, "Router");
     round_trip(ComponentName::Terminal, "Terminal");

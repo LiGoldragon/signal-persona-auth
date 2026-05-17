@@ -41,6 +41,7 @@ peer-7
 ;; ─── ComponentName (closed enum) ──────────────────────────────────
 
 Mind
+Orchestrate
 Message
 Router
 Terminal

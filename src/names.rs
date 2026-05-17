@@ -196,6 +196,8 @@ impl NetworkPeer {
 pub enum ComponentName {
     /// Persona central work graph and orchestration component.
     Mind,
+    /// Persona orchestration machinery component.
+    Orchestrate,
     /// Persona message ingress component.
     Message,
     /// Persona router component.
