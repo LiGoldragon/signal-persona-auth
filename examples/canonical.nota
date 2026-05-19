@@ -63,11 +63,11 @@ Introspect
 ;; ─── MessageOrigin (hand-rolled codec) ────────────────────────────
 
 (Internal Router)
-(InternalComponentInstance (InternalComponentInstanceOrigin Harness initiator))
+(InternalComponentInstance (Harness initiator))
 (External (Owner))
 
-;; ─── IngressContext (NotaRecord) ──────────────────────────────────
+;; ─── IngressContext (NotaRecord, tag-less per three-case rule) ────
 
-(IngressContext (Internal Router))
-(IngressContext (InternalComponentInstance (InternalComponentInstanceOrigin Harness reviewer)))
-(IngressContext (External (Owner)))
+((Internal Router))
+((InternalComponentInstance (Harness reviewer)))
+((External (Owner)))

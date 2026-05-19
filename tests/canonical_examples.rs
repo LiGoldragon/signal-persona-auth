@@ -103,7 +103,7 @@ fn canonical_message_origin_round_trips() {
             ComponentName::Harness,
             ComponentInstanceName::new("initiator"),
         )),
-        "(InternalComponentInstance (InternalComponentInstanceOrigin Harness initiator))",
+        "(InternalComponentInstance (Harness initiator))",
     );
     round_trip(
         MessageOrigin::External(ConnectionClass::Owner),
@@ -115,17 +115,17 @@ fn canonical_message_origin_round_trips() {
 fn canonical_ingress_context_round_trips() {
     round_trip(
         IngressContext::internal(ComponentName::Router),
-        "(IngressContext (Internal Router))",
+        "((Internal Router))",
     );
     round_trip(
         IngressContext::internal_component_instance(InternalComponentInstanceOrigin::new(
             ComponentName::Harness,
             ComponentInstanceName::new("reviewer"),
         )),
-        "(IngressContext (InternalComponentInstance (InternalComponentInstanceOrigin Harness reviewer)))",
+        "((InternalComponentInstance (Harness reviewer)))",
     );
     round_trip(
         IngressContext::external(ConnectionClass::Owner),
-        "(IngressContext (External (Owner)))",
+        "((External (Owner)))",
     );
 }

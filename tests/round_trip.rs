@@ -213,7 +213,7 @@ fn ingress_context_carries_origin_without_proof_material() {
 fn ingress_context_round_trips_through_nota_text_without_proof_material() {
     round_trip_nota(
         IngressContext::external(ConnectionClass::NonOwnerUser(UnixUserId::new(2000))),
-        "(IngressContext (External (NonOwnerUser 2000)))",
+        "((External (NonOwnerUser 2000)))",
     );
 }
 
@@ -224,14 +224,14 @@ fn component_instance_origin_round_trips_through_nota_text() {
             ComponentName::Harness,
             ComponentInstanceName::new("initiator"),
         )),
-        "(InternalComponentInstance (InternalComponentInstanceOrigin Harness initiator))",
+        "(InternalComponentInstance (Harness initiator))",
     );
     round_trip_nota(
         IngressContext::internal_component_instance(InternalComponentInstanceOrigin::new(
             ComponentName::Harness,
             ComponentInstanceName::new("reviewer"),
         )),
-        "(IngressContext (InternalComponentInstance (InternalComponentInstanceOrigin Harness reviewer)))",
+        "((InternalComponentInstance (Harness reviewer)))",
     );
 }
 
