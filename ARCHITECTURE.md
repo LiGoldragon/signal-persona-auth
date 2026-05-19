@@ -19,6 +19,30 @@ provenance alone. Other contract crates (`signal-persona-message`,
 `signal-persona`, etc.) import the typed records and attach them to
 their own request/reply payloads.
 
+## MUST IMPLEMENT — signal architecture migration
+
+This contract is migrating to contract-local verbs per
+`primary/reports/designer/238-signal-architecture-redirection-contract-local-verbs.md`
+and `primary/reports/designer/239-signal-architecture-migration-plan.md`.
+
+This crate is types-only — no `signal_channel!` invocation — so there
+are no contract verbs to rename here. The dependency on
+`signal-core` shifts to `signal-frame` (frame mechanics only); the
+typed provenance records (`IngressContext`, `MessageOrigin`,
+`OwnerIdentity`, `ConnectionClass`, `ComponentName`) are unaffected by
+the verb migration. The consumers that import this crate
+(`signal-persona-message`, `signal-persona`, etc.) get their own
+contract-local verb passes; this crate just keeps providing the typed
+nouns.
+
+References: `primary/reports/designer/238-signal-architecture-redirection-contract-local-verbs.md`,
+`primary/reports/designer/239-signal-architecture-migration-plan.md`.
+
+**Note to remover:** when the dependency rename to `signal-frame`
+lands, remove this section and add a `## Migration history —
+contract-local verbs (2026-05-XX)` paragraph noting the dependency
+shift.
+
 Boundary trust lives outside this crate: the Persona daemon creates
 per-engine sockets with the right ownership and permissions; the
 components accept connections on their own sockets; after the
