@@ -19,28 +19,30 @@ provenance alone. Other contract crates (`signal-persona-message`,
 `signal-persona`, etc.) import the typed records and attach them to
 their own request/reply payloads.
 
-## MUST IMPLEMENT — signal architecture migration
+## MUST IMPLEMENT — three-layer migration
 
-This contract is migrating to contract-local verbs per
-`primary/reports/designer/238-signal-architecture-redirection-contract-local-verbs.md`
-and `primary/reports/designer/239-signal-architecture-migration-plan.md`.
+This contract is migrating to the three-layer model affirmed
+2026-05-20 per
+`primary/reports/designer/246-v4-bundled-fix-deep-design-with-examples.md`
+and `primary/reports/designer/248-three-layer-changes-for-operators.md`.
 
 This crate is types-only — no `signal_channel!` invocation — so there
 are no contract verbs to rename here. The dependency on
 `signal-core` shifts to `signal-frame` (frame mechanics only); the
 typed provenance records (`IngressContext`, `MessageOrigin`,
 `OwnerIdentity`, `ConnectionClass`, `ComponentName`) are unaffected by
-the verb migration. The consumers that import this crate
+the three-layer alignment. The consumers that import this crate
 (`signal-persona-message`, `signal-persona`, etc.) get their own
-contract-local verb passes; this crate just keeps providing the typed
-nouns.
+three-layer passes; this crate just keeps providing the typed nouns.
 
-References: `primary/reports/designer/238-signal-architecture-redirection-contract-local-verbs.md`,
-`primary/reports/designer/239-signal-architecture-migration-plan.md`.
+References:
+- `primary/reports/designer/246-v4-bundled-fix-deep-design-with-examples.md`
+- `primary/reports/designer/248-three-layer-changes-for-operators.md`
+- `primary/skills/component-triad.md` §"Verbs come in three layers"
 
 **Note to remover:** when the dependency rename to `signal-frame`
 lands, remove this section and add a `## Migration history —
-contract-local verbs (2026-05-XX)` paragraph noting the dependency
+three-layer model (2026-05-XX)` paragraph noting the dependency
 shift.
 
 Boundary trust lives outside this crate: the Persona daemon creates
@@ -152,9 +154,9 @@ This crate is type-only vocabulary. Schema-level changes are
 breaking; coordinate every contract crate that imports
 `IngressContext`, `OwnerIdentity`, etc.
 
-This crate depends on `signal-core` via a named-branch reference,
-not a raw revision pin. The destination is a stable `signal-core` API
-branch/bookmark once that lane is declared.
+This crate depends on `signal-frame` via a named-branch reference,
+not a raw revision pin. The destination is a stable `signal-frame`
+API branch/bookmark once that lane is declared.
 
 ## 8 · Non-goals
 
@@ -182,5 +184,6 @@ tests/
   imports `OwnerIdentity` for the `SpawnEnvelope`.
 - `signal-persona-message/ARCHITECTURE.md` — message ingress contract
   that imports `IngressContext` for SO_PEERCRED-derived origin tagging.
-- `signal-core/ARCHITECTURE.md` — frame envelope kernel.
+- `signal-frame/ARCHITECTURE.md` — frame envelope kernel.
 - `~/primary/skills/contract-repo.md` — contract-repo discipline.
+- `~/primary/skills/component-triad.md` §"Verbs come in three layers".
