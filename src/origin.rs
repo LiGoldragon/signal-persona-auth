@@ -122,8 +122,8 @@ impl NotaDecode for ConnectionClass {
                 decoder.expect_record_end()?;
                 Ok(Self::Network(peer))
             }
-            other => Err(nota_codec::Error::UnknownKindForVerb {
-                verb: "ConnectionClass",
+            other => Err(nota_codec::Error::UnknownVariant {
+                enum_name: "ConnectionClass",
                 got: other.to_string(),
             }),
         }
@@ -186,8 +186,8 @@ impl NotaDecode for MessageOrigin {
                 decoder.expect_record_end()?;
                 Ok(Self::External(connection_class))
             }
-            other => Err(nota_codec::Error::UnknownKindForVerb {
-                verb: "MessageOrigin",
+            other => Err(nota_codec::Error::UnknownVariant {
+                enum_name: "MessageOrigin",
                 got: other.to_string(),
             }),
         }

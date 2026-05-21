@@ -146,8 +146,8 @@ impl NotaDecode for OwnerIdentity {
                 decoder.expect_record_end()?;
                 Ok(Self::System(principal))
             }
-            other => Err(nota_codec::Error::UnknownKindForVerb {
-                verb: "OwnerIdentity",
+            other => Err(nota_codec::Error::UnknownVariant {
+                enum_name: "OwnerIdentity",
                 got: other.to_string(),
             }),
         }

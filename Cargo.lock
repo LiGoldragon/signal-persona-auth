@@ -268,20 +268,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b39cdef0fa800fc44525c84ccb54a029961a8215f9619753635a9c0d2538d46d"
 
 [[package]]
-name = "signal-core"
+name = "signal-frame"
 version = "0.1.0"
-source = "git+https://github.com/LiGoldragon/signal-core.git#dd12794276ce48cc41dcceb97416476e54421f50"
+source = "git+https://github.com/LiGoldragon/signal-frame.git?branch=main#653773b7d4c18d16efd977ada4d280876debefd7"
 dependencies = [
  "nota-codec",
  "rkyv",
- "signal-core-macros",
+ "signal-frame-macros",
  "thiserror",
 ]
 
 [[package]]
-name = "signal-core-macros"
+name = "signal-frame-macros"
 version = "0.1.0"
-source = "git+https://github.com/LiGoldragon/signal-core.git#dd12794276ce48cc41dcceb97416476e54421f50"
+source = "git+https://github.com/LiGoldragon/signal-frame.git?branch=main#653773b7d4c18d16efd977ada4d280876debefd7"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -295,7 +295,7 @@ dependencies = [
  "nota-codec",
  "pretty_assertions",
  "rkyv",
- "signal-core",
+ "signal-frame",
 ]
 
 [[package]]

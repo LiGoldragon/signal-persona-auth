@@ -8,11 +8,11 @@ license = "MIT"
 
 [dependencies]
 rkyv = { version = "0.8", default-features = false, features = ["std", "bytecheck", "little_endian", "pointer_width_32", "unaligned"] }
-signal-core = { git = "https://github.com/LiGoldragon/signal-core.git" }
 nota-codec = { git = "https://github.com/LiGoldragon/nota-codec.git", branch = "main" }
 
 [dev-dependencies]
 pretty_assertions = "1"
+signal-frame = { git = "https://github.com/LiGoldragon/signal-frame.git", branch = "main" }
 
 [lints.rust]
 unsafe_code = "forbid"
